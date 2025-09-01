@@ -1,60 +1,63 @@
-namespace DesafioProjetoHospedagem.Models
+﻿using System.Text;
+using DesafioProjetoHospedagem.Models;
+
+Console.OutputEncoding = Encoding.UTF8;
+
+try
 {
-    public class Reserva
+    Console.WriteLine("🏨 Bem-vindo ao sistema de hospedagem!\n");
+
+    // Cadastro da suíte
+    Console.Write("Digite o tipo da suíte: ");
+    string tipo = Console.ReadLine();
+
+    Console.Write("Digite a capacidade da suíte: ");
+    int capacidade = Convert.ToInt32(Console.ReadLine());
+
+    Console.Write("Digite o valor da diária: ");
+    decimal valorDiaria = Convert.ToDecimal(Console.ReadLine());
+
+    Suite suite = new Suite(tipo, capacidade, valorDiaria);
+
+    // Cadastro da reserva
+    Console.Write("\nDigite a quantidade de dias reservados: ");
+    int dias = Convert.ToInt32(Console.ReadLine());
+
+    Reserva reserva = new Reserva(dias);
+    reserva.CadastrarSuite(suite);
+
+    // Cadastro de hóspedes
+    Console.Write("\nQuantos hóspedes deseja cadastrar? ");
+    int qtdHospedes = Convert.ToInt32(Console.ReadLine());
+
+    List<Pessoa> hospedes = new List<Pessoa>();
+
+    for (int i = 1; i <= qtdHospedes; i++)
     {
-        public List<Pessoa> Hospedes { get; set; }
-        public Suite Suite { get; set; }
-        public int DiasReservados { get; set; }
+        Console.Write($"Digite o nome do hóspede {i}: ");
+        string nome = Console.ReadLine();
 
-        public Reserva() { }
+        Console.Write($"Digite o sobrenome do hóspede {i} (opcional): ");
+        string sobrenome = Console.ReadLine();
 
-        public Reserva(int diasReservados)
-        {
-            DiasReservados = diasReservados;
-        }
-
-        public void CadastrarHospedes(List<Pessoa> hospedes)
-        {
-            // TODO: Verificar se a capacidade é maior ou igual ao número de hóspedes sendo recebido
-            // *IMPLEMENTE AQUI*
-            if (true)
-            {
-                Hospedes = hospedes;
-            }
-            else
-            {
-                // TODO: Retornar uma exception caso a capacidade seja menor que o número de hóspedes recebido
-                // *IMPLEMENTE AQUI*
-            }
-        }
-
-        public void CadastrarSuite(Suite suite)
-        {
-            Suite = suite;
-        }
-
-        public int ObterQuantidadeHospedes()
-        {
-            // TODO: Retorna a quantidade de hóspedes (propriedade Hospedes)
-            // *IMPLEMENTE AQUI*
-            return 0;
-        }
-
-        public decimal CalcularValorDiaria()
-        {
-            // TODO: Retorna o valor da diária
-            // Cálculo: DiasReservados X Suite.ValorDiaria
-            // *IMPLEMENTE AQUI*
-            decimal valor = 0;
-
-            // Regra: Caso os dias reservados forem maior ou igual a 10, conceder um desconto de 10%
-            // *IMPLEMENTE AQUI*
-            if (true)
-            {
-                valor = 0;
-            }
-
-            return valor;
-        }
+        hospedes.Add(new Pessoa(nome, sobrenome));
     }
+
+    reserva.CadastrarHospedes(hospedes);
+
+    // Exibe resumo
+    Console.WriteLine("\n===== RESUMO DA RESERVA =====");
+    Console.WriteLine($"Suíte: {suite.TipoSuite} (Capacidade: {suite.Capacidade})");
+    Console.WriteLine($"Hóspedes ({reserva.ObterQuantidadeHospedes()}):");
+    foreach (var h in hospedes)
+    {
+        Console.WriteLine($"- {h.NomeCompleto}");
+    }
+    Console.WriteLine($"Dias reservados: {reserva.DiasReservados}");
+    Console.WriteLine($"Valor total: R$ {reserva.CalcularValorDiaria():F2}");
 }
+catch (Exception ex)
+{
+    Console.WriteLine($"❌ Erro: {ex.Message}");
+}
+
