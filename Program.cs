@@ -1,25 +1,62 @@
-﻿using System.Text;
+﻿﻿using System.Text;
 using DesafioProjetoHospedagem.Models;
 
 Console.OutputEncoding = Encoding.UTF8;
 
-// Cria os modelos de hóspedes e cadastra na lista de hóspedes
-List<Pessoa> hospedes = new List<Pessoa>();
+try
+{
+    Console.WriteLine("🏨 Bem-vindo ao sistema de hospedagem!\n");
 
-Pessoa p1 = new Pessoa(nome: "Hóspede 1");
-Pessoa p2 = new Pessoa(nome: "Hóspede 2");
+    // Cadastro da suíte
+    Console.Write("Digite o tipo da suíte: ");
+    string tipo = Console.ReadLine();
 
-hospedes.Add(p1);
-hospedes.Add(p2);
+    Console.Write("Digite a capacidade da suíte: ");
+    int capacidade = Convert.ToInt32(Console.ReadLine());
 
-// Cria a suíte
-Suite suite = new Suite(tipoSuite: "Premium", capacidade: 2, valorDiaria: 30);
+    Console.Write("Digite o valor da diária: ");
+    decimal valorDiaria = Convert.ToDecimal(Console.ReadLine());
 
-// Cria uma nova reserva, passando a suíte e os hóspedes
-Reserva reserva = new Reserva(diasReservados: 5);
-reserva.CadastrarSuite(suite);
-reserva.CadastrarHospedes(hospedes);
+    Suite suite = new Suite(tipo, capacidade, valorDiaria);
 
-// Exibe a quantidade de hóspedes e o valor da diária
-Console.WriteLine($"Hóspedes: {reserva.ObterQuantidadeHospedes()}");
-Console.WriteLine($"Valor diária: {reserva.CalcularValorDiaria()}");
+    // Cadastro da reserva
+    Console.Write("\nDigite a quantidade de dias reservados: ");
+    int dias = Convert.ToInt32(Console.ReadLine());
+
+    Reserva reserva = new Reserva(dias);
+    reserva.CadastrarSuite(suite);
+
+    // Cadastro de hóspedes
+    Console.Write("\nQuantos hóspedes deseja cadastrar? ");
+    int qtdHospedes = Convert.ToInt32(Console.ReadLine());
+
+    List<Pessoa> hospedes = new List<Pessoa>();
+
+    for (int i = 1; i <= qtdHospedes; i++)
+    {
+        Console.Write($"Digite o nome do hóspede {i}: ");
+        string nome = Console.ReadLine();
+
+        Console.Write($"Digite o sobrenome do hóspede {i} (opcional): ");
+        string sobrenome = Console.ReadLine();
+
+        hospedes.Add(new Pessoa(nome, sobrenome));
+    }
+
+    reserva.CadastrarHospedes(hospedes);
+
+    // Exibe resumo
+    Console.WriteLine("\n===== RESUMO DA RESERVA =====");
+    Console.WriteLine($"Suíte: {suite.TipoSuite} (Capacidade: {suite.Capacidade})");
+    Console.WriteLine($"Hóspedes ({reserva.ObterQuantidadeHospedes()}):");
+    foreach (var h in hospedes)
+    {
+        Console.WriteLine($"- {h.NomeCompleto}");
+    }
+    Console.WriteLine($"Dias reservados: {reserva.DiasReservados}");
+    Console.WriteLine($"Valor total: R$ {reserva.CalcularValorDiaria():F2}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"❌ Erro: {ex.Message}");
+}
